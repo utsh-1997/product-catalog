@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './components/ProductCard';
+import AddProductForm from './components/AddProductForm';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
+  const fetchProducts = () => {
     fetch('http://localhost/product-api/products.php')
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.log(err));
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
   const filteredProducts = products.filter((product) =>
@@ -19,6 +24,7 @@ function App() {
   return (
     <div>
       <h1>Product Catalog</h1>
+      <AddProductForm onProductAdded={fetchProducts} />
       <input
         type="text"
         placeholder="Search products..."

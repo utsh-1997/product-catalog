@@ -4,9 +4,19 @@ function AddProductForm({ onProductAdded }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!name || !price || !category) {
+      setError('All fields are required');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
 
     fetch('http://localhost/product-api/products.php', {
       method: 'POST',
@@ -21,12 +31,14 @@ function AddProductForm({ onProductAdded }) {
           setPrice('');
           setCategory('');
         }
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
     <div className="add-form">
       <h2>Add New Product</h2>
+      {error && <p className="error">{error}</p>}
       <input
         type="text"
         placeholder="Product name"
@@ -45,7 +57,9 @@ function AddProductForm({ onProductAdded }) {
         value={category}
         onChange={(e) => setCategory(e.target.value)}
       />
-      <button onClick={handleSubmit}>Add Product</button>
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? 'Adding...' : 'Add Product'}
+      </button>
     </div>
   );
 }

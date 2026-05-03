@@ -34,9 +34,12 @@ function App() {
       {filteredProducts.map((product) => (
         <ProductCard
           key={product.id}
+          id={product.id}
           name={product.name}
           price={product.price}
           category={product.category}
+          onDelete={fetchProducts}
+          onUpdate={fetchProducts}
         />
       ))}
     </div>

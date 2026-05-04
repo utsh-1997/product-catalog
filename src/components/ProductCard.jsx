@@ -7,7 +7,7 @@ function ProductCard({ id, name, price, category, onDelete, onUpdate }) {
   const [editCategory, setEditCategory] = useState(category);
 
   const handleDelete = () => {
-    fetch('http://localhost/product-api/products.php', {
+    fetch('http://api4magic.lovestoblog.com/api/products.php', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })

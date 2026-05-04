@@ -18,7 +18,7 @@ function AddProductForm({ onProductAdded }) {
     setLoading(true);
     setError('');
 
-    fetch('http://localhost/product-api/products.php', {
+    fetch('http://api4magic.lovestoblog.com/api/products.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, price, category })

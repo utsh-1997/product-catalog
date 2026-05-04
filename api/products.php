@@ -9,15 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// $host = "sql103.infinityfree.com";
-// $dbname = "if0_41825823_api4magic";
-// $username = "if0_41825823";
-// $password = "CLuwcMO4hW";
-
-$host = "localhost";
-$dbname = "product_catalog";
-$username = "root";
-$password = "";
+$host = "sql103.infinityfree.com";
+$dbname = "if0_41825823_api4magic";
+$username = "if0_41825823";
+$password = "CLuwcMO4hW";
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

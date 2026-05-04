@@ -7,7 +7,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const fetchProducts = () => {
-    fetch('http://api4magic.lovestoblog.com/api/products.php')
+    fetch('https://api4magic.lovestoblog.com/api/products.php')
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.log(err));

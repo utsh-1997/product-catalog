@@ -7,7 +7,7 @@ function ProductCard({ id, name, price, category, onDelete, onUpdate }) {
   const [editCategory, setEditCategory] = useState(category);
 
   const handleDelete = () => {
-    fetch('http://api4magic.lovestoblog.com/api/products.php', {
+    fetch('https://api4magic.lovestoblog.com/api/products.php', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })
@@ -19,7 +19,7 @@ function ProductCard({ id, name, price, category, onDelete, onUpdate }) {
   };
 
   const handleUpdate = () => {
-    fetch('http://localhost/product-api/products.php', {
+    fetch('https://api4magic.lovestoblog.com/api/products.php', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, name: editName, price: editPrice, category: editCategory })

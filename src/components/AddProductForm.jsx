@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function AddProductForm({ onProductAdded }) {
+function AddProductForm({ onProductAdded, apiUrl }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
@@ -9,16 +9,13 @@ function AddProductForm({ onProductAdded }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!name || !price || !category) {
       setError('All fields are required');
       return;
     }
-
     setLoading(true);
     setError('');
-
-    fetch('https://product-api-0t84.onrender.com/products.php', {
+    fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, price, category })
@@ -57,7 +54,7 @@ function AddProductForm({ onProductAdded }) {
         value={category}
         onChange={(e) => setCategory(e.target.value)}
       />
-      <button onClick={handleSubmit} disabled={loading}>
+      <button className="add-btn" onClick={handleSubmit} disabled={loading}>
         {loading ? 'Adding...' : 'Add Product'}
       </button>
     </div>

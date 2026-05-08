@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function ProductCard({ id, name, price, category, onDelete, onUpdate, apiUrl }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(name);
   const [editPrice, setEditPrice] = useState(price);
   const [editCategory, setEditCategory] = useState(category);
+  const navigate = useNavigate();
 
   const handleDelete = () => {
     fetch(apiUrl, {
@@ -53,6 +55,7 @@ function ProductCard({ id, name, price, category, onDelete, onUpdate, apiUrl }) 
       <div className="card-actions">
         <button className="edit-btn" onClick={() => setIsEditing(true)}>Edit</button>
         <button className="delete-btn" onClick={handleDelete}>Delete</button>
+        <button className="view-btn" onClick={() => navigate(`/product/${id}`)}>View</button>
       </div>
     </div>
   );

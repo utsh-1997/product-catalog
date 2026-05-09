@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
 import AddProductForm from '../components/AddProductForm';
+import SkeletonCard from '../components/SkeletonCard';
+import Toast from '../components/Toast';
 
 const API_URL = 'https://product-api-0t84.onrender.com/products.php';
 
@@ -8,12 +10,26 @@ function HomePage() {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+  };
 
   const fetchProducts = () => {
+    setLoading(true);
     fetch(API_URL)
       .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => console.log(err));
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+        showToast('Failed to load products', 'error');
+      });
   };
 
   useEffect(() => {
@@ -30,7 +46,21 @@ function HomePage() {
 
   return (
     <div className="container">
-      <AddProductForm onProductAdded={fetchProducts} apiUrl={API_URL} />
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
+      <AddProductForm
+        onProductAdded={() => {
+          fetchProducts();
+          showToast('Product added successfully!');
+        }}
+        apiUrl={API_URL}
+      />
 
       <input
         className="search-bar"
@@ -52,7 +82,11 @@ function HomePage() {
         ))}
       </div>
 
-      {filteredProducts.length === 0 ? (
+      {loading ? (
+        <div className="product-grid">
+          {[1,2,3,4,5,6].map(i => <SkeletonCard key={i} />)}
+        </div>
+      ) : filteredProducts.length === 0 ? (
         <div className="empty-state">No products found.</div>
       ) : (
         <div className="product-grid">
@@ -63,8 +97,14 @@ function HomePage() {
               name={product.name}
               price={product.price}
               category={product.category}
-              onDelete={fetchProducts}
-              onUpdate={fetchProducts}
+              onDelete={() => {
+                fetchProducts();
+                showToast('Product deleted.', 'info');
+              }}
+              onUpdate={() => {
+                fetchProducts();
+                showToast('Product updated!');
+              }}
               apiUrl={API_URL}
             />
           ))}

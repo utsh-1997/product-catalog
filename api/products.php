@@ -9,13 +9,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-$host = "sql12.freesqldatabase.com";
-$dbname = "sql12825350";
-$username = "sql12825350";
-$password = "lDTKa7V9MR";
+$host = getenv('DB_HOST');
+$dbname = getenv('DB_NAME');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASS');
+$port = getenv('DB_PORT');
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo = new PDO(
+        "mysql:host=$host;port=$port;dbname=$dbname",
+        $username,
+        $password,
+        [PDO::MYSQL_ATTR_SSL_CA => true,
+         PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false]
+    );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $method = $_SERVER['REQUEST_METHOD'];

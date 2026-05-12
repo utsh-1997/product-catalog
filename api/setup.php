@@ -18,6 +18,7 @@ try {
     );
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+    // Step 1 - create table
     $pdo->exec("CREATE TABLE IF NOT EXISTS products (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -25,19 +26,9 @@ try {
         category VARCHAR(100) NOT NULL
     )");
 
-    $pdo->exec("INSERT INTO products (name, price, category) VALUES
-        ('Wireless Earbuds', 7000, 'Electronics'),
-        ('Running Shoes', 3500, 'Footwear'),
-        ('Water Bottle', 499, 'Sports'),
-        ('Laptop Stand', 1299, 'Accessories'),
-        ('Sunglasses', 2199, 'Fashion'),
-        ('Yoga Mat', 899, 'Fitness'),
-        ('TV', 107000, 'Electronics')
-    ");
-
-    echo json_encode(["success" => true, "message" => "Table created and data inserted"]);
+    echo json_encode(["success" => true, "message" => "Table created successfully"]);
 
 } catch (PDOException $e) {
-    echo json_encode(["error" => $e->getMessage()]);
+    echo json_encode(["error" => $e->getMessage(), "step" => "create table"]);
 }
 ?>

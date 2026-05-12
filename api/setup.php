@@ -1,4 +1,7 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+
 $host = getenv('DB_HOST');
 $dbname = getenv('DB_NAME');
 $username = getenv('DB_USER');
@@ -22,21 +25,17 @@ try {
         category VARCHAR(100) NOT NULL
     )");
 
-    $count = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
+    $pdo->exec("INSERT INTO products (name, price, category) VALUES
+        ('Wireless Earbuds', 7000, 'Electronics'),
+        ('Running Shoes', 3500, 'Footwear'),
+        ('Water Bottle', 499, 'Sports'),
+        ('Laptop Stand', 1299, 'Accessories'),
+        ('Sunglasses', 2199, 'Fashion'),
+        ('Yoga Mat', 899, 'Fitness'),
+        ('TV', 107000, 'Electronics')
+    ");
 
-    if ($count == 0) {
-        $pdo->exec("INSERT INTO products (name, price, category) VALUES
-            ('Wireless Earbuds', 7000, 'Electronics'),
-            ('Running Shoes', 3500, 'Footwear'),
-            ('Water Bottle', 499, 'Sports'),
-            ('Laptop Stand', 1299, 'Accessories'),
-            ('Sunglasses', 2199, 'Fashion'),
-            ('Yoga Mat', 899, 'Fitness'),
-            ('TV', 107000, 'Electronics')
-        ");
-    }
-
-    echo json_encode(["success" => true, "message" => "Database ready"]);
+    echo json_encode(["success" => true, "message" => "Table created and data inserted"]);
 
 } catch (PDOException $e) {
     echo json_encode(["error" => $e->getMessage()]);

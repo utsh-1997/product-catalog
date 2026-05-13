@@ -1,13 +1,14 @@
 import { useState } from 'react';
+import { supabase } from '../supabase';
 
-function AddProductForm({ onProductAdded, apiUrl }) {
+function AddProductForm({ onProductAdded }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !price || !category) {
       setError('All fields are required');
@@ -15,21 +16,20 @@ function AddProductForm({ onProductAdded, apiUrl }) {
     }
     setLoading(true);
     setError('');
-    fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, price, category })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          onProductAdded();
-          setName('');
-          setPrice('');
-          setCategory('');
-        }
-      })
-      .finally(() => setLoading(false));
+
+    const { error } = await supabase
+      .from('products')
+      .insert([{ name, price: parseFloat(price), category }]);
+
+    if (error) {
+      setError('Failed to add product');
+    } else {
+      onProductAdded();
+      setName('');
+      setPrice('');
+      setCategory('');
+    }
+    setLoading(false);
   };
 
   return (

@@ -3,8 +3,8 @@ import ProductCard from '../components/ProductCard';
 import AddProductForm from '../components/AddProductForm';
 import SkeletonCard from '../components/SkeletonCard';
 import Toast from '../components/Toast';
+import { supabase } from '../supabase';
 
-const API_URL = 'https://product-api-0t84.onrender.com/products.php';
 const PRODUCTS_PER_PAGE = 6;
 
 function HomePage() {
@@ -20,19 +20,19 @@ function HomePage() {
     setToast({ message, type });
   };
 
-  const fetchProducts = () => {
-    setLoading(true);
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        setProducts(Array.isArray(data) ? data : []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.log(err);
-        setLoading(false);
-        showToast('Failed to load products', 'error');
-      });
+  const fetchProducts = async () => {
+  setLoading(true);
+  const { data, error } = await supabase
+    .from('products')
+    .select('*');
+
+  if (error) {
+    showToast('Failed to load products', 'error');
+    setLoading(false);
+    return;
+  }
+  setProducts(data);
+  setLoading(false);
   };
 
   useEffect(() => {
@@ -87,7 +87,6 @@ function HomePage() {
           fetchProducts();
           showToast('Product added successfully!');
         }}
-        apiUrl={API_URL}
       />
 
       <div className="search-sort-row">
@@ -153,7 +152,6 @@ function HomePage() {
                   fetchProducts();
                   showToast('Product updated!');
                 }}
-                apiUrl={API_URL}
               />
             ))}
           </div>

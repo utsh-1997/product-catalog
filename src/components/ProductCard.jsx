@@ -1,36 +1,33 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../supabase';
 
-function ProductCard({ id, name, price, category, onDelete, onUpdate, apiUrl }) {
+function ProductCard({ id, name, price, category, onDelete, onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(name);
   const [editPrice, setEditPrice] = useState(price);
   const [editCategory, setEditCategory] = useState(category);
   const navigate = useNavigate();
 
-  const handleDelete = () => {
-    fetch(apiUrl, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    })
-      .then(res => res.json())
-      .then(data => { if (data.success) onDelete(); });
+  const handleDelete = async () => {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (!error) onDelete();
   };
 
-  const handleUpdate = () => {
-    fetch(apiUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, name: editName, price: editPrice, category: editCategory })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setIsEditing(false);
-          onUpdate();
-        }
-      });
+  const handleUpdate = async () => {
+    const { error } = await supabase
+      .from('products')
+      .update({ name: editName, price: parseFloat(editPrice), category: editCategory })
+      .eq('id', id);
+
+    if (!error) {
+      setIsEditing(false);
+      onUpdate();
+    }
   };
 
   if (isEditing) {

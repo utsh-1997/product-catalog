@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
-const API_URL = 'https://product-api-0t84.onrender.com/products.php';
+import { supabase } from '../supabase';
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -10,13 +9,17 @@ function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        const found = data.find(p => p.id === parseInt(id));
-        setProduct(found);
-        setLoading(false);
-      });
+    const fetchProduct = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (!error) setProduct(data);
+      setLoading(false);
+    };
+    fetchProduct();
   }, [id]);
 
   if (loading) return <div className="container"><p>Loading...</p></div>;
@@ -24,13 +27,9 @@ function ProductDetailPage() {
 
   return (
     <div className="container">
-      <button
-        className="back-btn"
-        onClick={() => navigate('/')}
-      >
+      <button className="back-btn" onClick={() => navigate('/')}>
         ← Back to Catalog
       </button>
-
       <div className="detail-card">
         <p className="category">{product.category}</p>
         <h1>{product.name}</h1>
